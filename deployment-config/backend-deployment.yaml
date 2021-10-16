@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proofnft-backend-deployment
+  labels:
+    app: proofnftbe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: proofnftbe
+  template:
+    metadata:
+      labels:
+        app: proofnftbe
+    spec:
+      containers:
+      - name: proofnftbe
+        image: proofnft-be:0.0.1
+        ports:
+        - containerPort: 5000
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
+              

@@ -133,8 +133,6 @@ function Home(props) {
                   <div className="header-content">
                     <h1>Largest Marketplace To Collect , Buy and Sell Creative NFTs Digital Assets</h1>
                     <p>
-                      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nesciunt, deleniti, ducimus. Asperiores
-                      reiciendis eligendi magnam quas, repellendus. Voluptate repudiandae non.
                     </p>
                     {/* <a href="explore.html" className="btn btn-white mb-0">
                     Explore
