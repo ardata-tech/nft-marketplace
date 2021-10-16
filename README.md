@@ -13,7 +13,7 @@
 
 - Amazon S3 buckets configuration
 	- follow this tutorial to create a new bucket :https://docs.aws.amazon.com/quickstarts/latest/s3backup/step-1-create-bucket.html
-	- get the bucket name, id and secrete
+	- get the bucket name, id and secret
 	- paste them in file server/controllers/upload.js lines 8,9 and 12
 
 - Run the application
