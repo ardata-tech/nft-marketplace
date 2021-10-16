@@ -44,7 +44,7 @@ function ListForm({ tokenId, reset }) {
           <>
             <h3 className="theme-title">Fill Item Details</h3>
             <div className="theme-input-box">
-              <label>Price (ETH)</label>
+              <label>Price (BNB)</label>
               <input
                 className="theme-input"
                 type="text"

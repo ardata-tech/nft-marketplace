@@ -1,61 +1,63 @@
 import React from "react";
 import { web3 } from "../utils/blockchainInteractor";
 import * as moment from "moment";
-const BasicItemDetails = ({ nftDetails }) => {
+const BasicItemDetails = ({ nftDetails, ercSymbol }) => {
   return (
-    <div class="col-12 mb-30 mt-s">
-      <div class="card">
-        <div class="card-body">
-          <div class="row">
-            <div class="col-lg-12">
-              <div class="d-flex flex-column h-100">
-                {/* <p class="mb-1">3 of 5 In Stock</p> */}
-                <h4 class="font-weight-bolder">{nftDetails.title || nftDetails.name}</h4>
+    <div className="col-12 mb-30 mt-s">
+      <div className="card">
+        <div className="card-body">
+          <div className="row">
+            <div className="col-lg-12">
+              <div className="d-flex flex-column h-100">
+                {/* <p className="mb-1">3 of 5 In Stock</p> */}
+                <h4 className="font-weight-bolder">{nftDetails.title || nftDetails.name}</h4>
                 <p>{nftDetails.description}</p>
-                <p class="text-bold mb-30">
+                <p className="text-bold mb-30">
                   {nftDetails.price && (
                     <>
                       Price :{" "}
-                      <span class="gradient-text text-lg">
-                        {web3.utils.fromWei(nftDetails.price.toString(), "ether")} ETH
+                      <span className="gradient-text text-lg">
+                        {nftDetails.priceType === "1"
+                          ? `${web3.utils.fromWei(nftDetails.price.toString(),"ether")} ${ercSymbol}`
+                          : `${web3.utils.fromWei(nftDetails.price.toString(), "ether")} BNB`}
                       </span>
                     </>
                   )}
                   {nftDetails.currentPrice && (
                     <>
                       Current Price :{" "}
-                      <span class="gradient-text text-lg">
-                        {web3.utils.fromWei(nftDetails.currentPrice.toString(), "ether")} ETH
+                      <span className="gradient-text text-lg">
+                        {web3.utils.fromWei(nftDetails.currentPrice.toString(), "ether")} BNB
                       </span>
                     </>
                   )}
                 </p>
-                <div class="row">
-                  <div class="col-md-6">
-                    <ul class="list-group">
-                      <li class="list-group-item border-0 ps-0 pt-0 text-sm">
-                        <strong class="text-dark mr-10">Item Artist: </strong>
+                <div className="row">
+                  <div className="col-md-6">
+                    <ul className="list-group">
+                      <li className="list-group-item border-0 ps-0 pt-0 text-sm">
+                        <strong className="text-dark mr-10">Item Artist: </strong>
                         {nftDetails.owner}
                       </li>
-                      <li class="list-group-item border-0 ps-0 text-sm">
-                        <strong class="text-dark mr-10">Created:</strong>{" "}
+                      <li className="list-group-item border-0 ps-0 text-sm">
+                        <strong className="text-dark mr-10">Created:</strong>{" "}
                         {moment(nftDetails.createdAt).utcOffset(0).format("DD MMM YYYY")}
                       </li>
                       {nftDetails.startingPrice && (
-                        <li class="list-group-item border-0 ps-0 text-sm">
-                          <strong class="text-dark">Starting Price:</strong> $
-                          {web3.utils.fromWei(nftDetails.startingPrice.toString(), "ether")} ETH
+                        <li className="list-group-item border-0 ps-0 text-sm">
+                          <strong className="text-dark">Starting Price:</strong> $
+                          {web3.utils.fromWei(nftDetails.startingPrice.toString(), "ether")} BNB
                         </li>
                       )}
                       {nftDetails.endingPrice && (
-                        <li class="list-group-item border-0 ps-0 text-sm">
-                          <strong class="text-dark">Ending Price:</strong> $
-                          {web3.utils.fromWei(nftDetails.endingPrice.toString(), "ether")} ETH
+                        <li className="list-group-item border-0 ps-0 text-sm">
+                          <strong className="text-dark">Ending Price:</strong> $
+                          {web3.utils.fromWei(nftDetails.endingPrice.toString(), "ether")} BNB
                         </li>
                       )}
 
-                      <li class="list-group-item border-0 ps-0 text-sm">
-                        <strong class="text-dark">Item Category:</strong> {nftDetails.category}
+                      <li className="list-group-item border-0 ps-0 text-sm">
+                        <strong className="text-dark">Item Category:</strong> {nftDetails.category}
                       </li>
                     </ul>
                   </div>

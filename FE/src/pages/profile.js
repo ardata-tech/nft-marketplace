@@ -8,8 +8,10 @@ import NftCard from "../components/NftCard";
 import { getAllNFTs } from "../utils/commonInteractor";
 import { Spinner } from "reactstrap";
 import { ListingType } from "../utils/blockchainInteractor";
+import { getSymbolERC20 } from "../utils/erc20Interactor";
 
 let allNFTs = [];
+let ercSymbol = "TKN";
 function Profile(props) {
   const { state, changeState } = useContext(UserContext);
   const { user } = state;
@@ -114,36 +116,37 @@ function Profile(props) {
     setData(allNFTs);
     getPageData(allNFTs);
     setIsLoading(false);
+    ercSymbol = await getSymbolERC20();
   };
   console.log(data, profileForm);
   return (
     <>
       <main className="main-content mt-1 border-radius-lg">
-        <div class="container-fluid">
+        <div className="container-fluid">
           <div
-            class="page-header min-height-300 border-radius-xl mt-4"
+            className="page-header min-height-300 border-radius-xl mt-4"
             style={{
               "background-image": "url('/assets/img/curved-images/curved0.jpg')",
               "background-position-y": "50%",
             }}
           >
-            <span class="mask bg-gradient-primary opacity-6"></span>
+            <span className="mask bg-gradient-primary opacity-6"></span>
           </div>
-          <div class="card card-body blur shadow-blur mx-4 mt-n6">
-            <div class="row gx-4 justify-content-between">
+          <div className="card card-body blur shadow-blur mx-4 mt-n6">
+            <div className="row gx-4 justify-content-between">
               <div className="d-flex w-85">
-                <div class="col-auto">
-                  <div class="avatar avatar-xl position-relative">
+                <div className="col-auto">
+                  <div className="avatar avatar-xl position-relative">
                     <img
                       src={profileForm.pic || "/assets/img/bruce-mars.jpg"}
                       alt="..."
-                      class="w-100 border-radius-lg shadow-sm"
+                      className="w-100 border-radius-lg shadow-sm"
                       style={{ height: "100%", objectFit: "cover" }}
                     />
                     <label htmlFor="file-upload">
-                      <span class="btn btn-sm btn-icon-only bg-gradient-light position-absolute bottom-0 end-0 mb-n2 me-n2">
+                      <span className="btn btn-sm btn-icon-only bg-gradient-light position-absolute bottom-0 end-0 mb-n2 me-n2">
                         <i
-                          class="fa fa-pen top-0"
+                          className="fa fa-pen top-0"
                           data-bs-toggle="tooltip"
                           data-bs-placement="top"
                           title="Edit Image"
@@ -163,35 +166,32 @@ function Profile(props) {
                     />
                   </div>
                 </div>
-                <div class="col-auto my-auto mx-2">
-                  <div class="h-100">
-                    <h5 class="mb-1">{profileForm.username}</h5>
+                <div className="col-auto my-auto mx-2">
+                  <div className="h-100">
+                    <h5 className="mb-1">{profileForm.username}</h5>
                   </div>
                 </div>
               </div>
-              <div className="my-2 d-flex justify-content-center align-items-center w-10">
-                <span
-                  className="my-2 btn-outline-primary cursor-pointer text-decoration-underline"
-                  onClick={() => props.logout()}
-                >
+              <div className="my-2 d-flex justify-content-center align-items-center w-15">
+                <span className="my-2 btn btn-outline-primary btn-sm mb-0" onClick={() => props.logout()}>
                   Sign out
                 </span>
               </div>
             </div>
           </div>
         </div>
-        <div class="container-fluid py-4 pb-0">
-          <div class="row">
-            <div class="col-12 col-xl-4 col-lg-6 mt-s">
-              <div class="card h-100">
-                <div class="card-header pb-0 p-3">
-                  <div class="row">
-                    <div class="col-md-8 d-flex align-items-center">
-                      <h6 class="mb-0">Profile Information</h6>
+        <div className="container-fluid py-4 pb-0">
+          <div className="row">
+            <div className="col-12 col-xl-4 col-lg-6 mt-s">
+              <div className="card h-100">
+                <div className="card-header pb-0 p-3">
+                  <div className="row">
+                    <div className="col-md-8 d-flex align-items-center">
+                      <h6 className="mb-0">Profile Information</h6>
                     </div>
                   </div>
                 </div>
-                <div class="card-body p-3">
+                <div className="card-body p-3">
                   {editableFields.bio ? (
                     <textarea
                       type="text"
@@ -204,7 +204,7 @@ function Profile(props) {
                       autoComplete="off"
                     />
                   ) : (
-                    <p class="text-sm">
+                    <p className="text-sm">
                       {profileForm.bio}{" "}
                       <span
                         className="mx-4 btn-outline-primary cursor-pointer"
@@ -214,10 +214,10 @@ function Profile(props) {
                       </span>
                     </p>
                   )}
-                  <hr class="horizontal gray-light my-2" />
-                  <ul class="list-group">
-                    <li class="list-group-item border-0 ps-0 pt-0 text-sm">
-                      <strong class="text-dark">Username:</strong>
+                  <hr className="horizontal gray-light my-2" />
+                  <ul className="list-group">
+                    <li className="list-group-item border-0 ps-0 pt-0 text-sm">
+                      <strong className="text-dark">Username:</strong>
                       {editableFields.username ? (
                         <input
                           type="text"
@@ -241,8 +241,8 @@ function Profile(props) {
                         </>
                       )}
                     </li>
-                    <li class="list-group-item border-0 ps-0 text-sm ">
-                      <strong class="text-dark">Email:</strong>
+                    <li className="list-group-item border-0 ps-0 text-sm ">
+                      <strong className="text-dark">Email:</strong>
                       {editableFields.email ? (
                         <input
                           type="text"
@@ -266,8 +266,8 @@ function Profile(props) {
                         </>
                       )}
                     </li>
-                    <li class="list-group-item border-0 ps-0 text-sm">
-                      <strong class="text-dark">Wallet Address:</strong> &nbsp; {profileForm.address}
+                    <li className="list-group-item border-0 ps-0 text-sm">
+                      <strong className="text-dark">Wallet Address:</strong> &nbsp; {profileForm.address}
                     </li>
                     {Object.values(editableFields).includes(true) && (
                       <div className="text-center">
@@ -281,11 +281,11 @@ function Profile(props) {
               </div>
             </div>
             {isLoading ? (
-              <div class="col-12 mt-4">
-                <div class="card mb-4">
-                  <div class="card-header pb-0 p-3" id="projects">
-                    <h6 class="mb-1">Author Projects</h6>
-                    <p class="text-sm">Architects Crypto Assets</p>
+              <div className="col-12 mt-4">
+                <div className="card mb-4">
+                  <div className="card-header pb-0 p-3" id="projects">
+                    <h6 className="mb-1">Author Projects</h6>
+                    <p className="text-sm">Architects Crypto Assets</p>
                   </div>
                   <div className="text-center mb-4">
                     <Spinner style={{ width: "6rem", height: "6rem" }} size="lg" color="primary" />
@@ -294,13 +294,13 @@ function Profile(props) {
               </div>
             ) : (
               !!data.length && (
-                <div class="col-12 mt-4">
-                  <div class="card mb-4">
-                    <div class="card-header pb-0 p-3" id="projects">
+                <div className="col-12 mt-4">
+                  <div className="card mb-4">
+                    <div className="card-header pb-0 p-3" id="projects">
                       <div className="d-flex justify-content-between">
                         <div>
-                          <h6 class="mb-1">Author Projects</h6>
-                          <p class="text-sm">Architects Crypto Assets</p>
+                          <h6 className="mb-1">Author Projects</h6>
+                          <p className="text-sm">Architects Crypto Assets</p>
                         </div>
                         <div className="d-flex mx-4 justify-content-center my-auto">
                           <h5>Filters: </h5>
@@ -328,18 +328,50 @@ function Profile(props) {
                           >
                             Gif
                           </span>
+                          <span
+                            className={`mx-2 btn-outline-primary cursor-pointer ${
+                              catFilters.includes("VIDEO") ? "fw-bolder text-decoration-underline" : ""
+                            }`}
+                            onClick={() => handleChangeCategory("VIDEO")}
+                          >
+                            Video
+                          </span>
+                          <span
+                            className={`mx-2 btn-outline-primary cursor-pointer ${
+                              catFilters.includes("AUDIO") ? "fw-bolder text-decoration-underline" : ""
+                            }`}
+                            onClick={() => handleChangeCategory("AUDIO")}
+                          >
+                            Audio
+                          </span>
+                          <span
+                            className={`mx-2 btn-outline-primary cursor-pointer ${
+                              catFilters.includes("PDF") ? "fw-bolder text-decoration-underline" : ""
+                            }`}
+                            onClick={() => handleChangeCategory("PDF")}
+                          >
+                            Pdf
+                          </span>
                         </div>
                       </div>
                     </div>
-                    <div class="card-body p-3">
-                      <div class="row">
+                    <div className="card-body p-3">
+                      <div className="row">
                         {listToDisplay.slice(0, totalVisibleItem).map((obj) => (
-                          <NftCard nft={obj} isAuction={obj.listingType === ListingType.AUCTION} isProfileCard />
+                          <NftCard
+                            nft={obj}
+                            isAuction={obj.listingType === ListingType.AUCTION}
+                            ercSymbol={ercSymbol}
+                            isProfileCard
+                          />
                         ))}
                         {listToDisplay.length > totalVisibleItem && (
-                          <div class="col-md-12 text-center" onClick={() => setTotalVisibleItems(totalVisibleItem + 4)}>
-                            <span class="btn bg-gradient-dark mb-0">
-                              <i class="fas fa-plus mr-10" aria-hidden="true"></i>Load More
+                          <div
+                            className="col-md-12 text-center"
+                            onClick={() => setTotalVisibleItems(totalVisibleItem + 4)}
+                          >
+                            <span className="btn bg-gradient-dark mb-0">
+                              <i className="fas fa-plus mr-10" aria-hidden="true"></i>Load More
                             </span>
                           </div>
                         )}

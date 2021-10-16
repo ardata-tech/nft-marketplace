@@ -1,5 +1,6 @@
 import {ethereum, loadContract, marketplaceContractAddress, web3} from "./blockchainInteractor";
-let mintFees = '';
+let mintFeesNative = '';
+let mintFeesERC = '';
 
 export async function balanceOfAddressMarketplace(address){
     const contract = loadContract();
@@ -101,24 +102,42 @@ export async function getMarketPlaceTokenByTokenId(tokenId){
         return null;
     }
 }
-export async function getMintFees(){
-    if(!mintFees){
+export async function getMintFees(isERC20 = false){
+    if(!isERC20){
+        if(!mintFeesNative){
+            const contract = loadContract();
+            try{
+                mintFeesNative  = await contract.methods.mintFeeNative().call();
+            }catch (e) {
+                mintFeesNative = '0';
+            }
+        }
+        return web3.utils.fromWei(mintFeesNative, 'ether');
+    }
+    if(!mintFeesERC){
         const contract = loadContract();
         try{
-            mintFees  = await contract.methods.mintFeeNative().call();
+            mintFeesERC  = await contract.methods.mintFee().call();
         }catch (e) {
-            mintFees = '0';
+            mintFeesERC = '0';
         }
     }
-    return web3.utils.fromWei(mintFees, 'ether');
+    return web3.utils.fromWei(mintFeesERC, 'ether');
+
 }
-export async function mintNFT(){
+export async function mintNFT(currency){
     const contract = loadContract();
-    const txn = await contract.methods.mintNative().send({
+    let payload = {
         from: ethereum.selectedAddress,
         to: marketplaceContractAddress,
         gasLimit: 2000000,
-        value: web3.utils.toWei(await getMintFees(), 'ether'),
-    });
+    }
+    let txn = null
+    if (currency === "ERC") {
+        txn = await contract.methods.mint().send(payload);
+    } else {
+        payload.value = web3.utils.toWei(await getMintFees(), 'ether');
+        txn = await contract.methods.mintNative().send(payload);
+    }
     return txn;
 }

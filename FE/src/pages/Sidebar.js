@@ -172,7 +172,7 @@ function Sidebar({ onStart }) {
             <>
               <li className="nav-item">
                 <div className="text-center mt-4">
-                  <button class="btn bg-gradient-primary w-80 mb-0" onClick={onStart}>
+                  <button className="btn bg-gradient-primary w-80 mb-0" onClick={onStart}>
                     Start
                   </button>
                 </div>

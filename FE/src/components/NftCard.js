@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { getUrlExtension } from "../services/utilService";
 
 const intervalHash = null;
-const NftCard = ({ nft, isAuction, isProfileCard }) => {
+const NftCard = ({ nft, isAuction, isProfileCard, ercSymbol }) => {
   const [auctionDetails, setAuctionDetails] = useState(null);
 
   useEffect(() => {
@@ -60,14 +60,14 @@ const NftCard = ({ nft, isAuction, isProfileCard }) => {
     const type = getUrlExtension(url).toLowerCase();
     if (["mp4", "ogv", "ogg", "webm"].includes(type)) {
       return (
-        <video class="w-100 border-radius-lg" controls style={{ height: "240px", objectFit: "cover" }}>
+        <video className="w-100 border-radius-lg" controls style={{ height: "240px", objectFit: "cover" }}>
           <source src={url} type={`video/${type}`} />
         </video>
       );
     }
     if (["mp3", "ogv"].includes(type)) {
       return (
-        <audio class="w-100 border-radius-lg" controls style={{ height: "240px", objectFit: "cover" }}>
+        <audio className="w-100 border-radius-lg" controls style={{ height: "240px", objectFit: "cover" }}>
           <source src={url} type={`audio/${type}`} />
         </audio>
       );
@@ -76,7 +76,7 @@ const NftCard = ({ nft, isAuction, isProfileCard }) => {
       <object
         alt="Uploaded file"
         data={url}
-        class="w-100 border-radius-lg"
+        className="w-100 border-radius-lg"
         style={{ width: "100%", height: "240px", objectFit: "cover" }}
         height="240px"
       />
@@ -85,7 +85,7 @@ const NftCard = ({ nft, isAuction, isProfileCard }) => {
   const { days, hours, minutes, totalSeconds } = auctionDetails?.timeRemaining || {};
   return (
     <div className="col-xl-3 col-md-6 mb-xl-0">
-      <div className="card card-blog card-plain">
+      <Link to={`/nft/${nft.tokenId}`} className="card card-blog card-plain">
         <div className="position-relative">
           <a className="d-block border-radius-xl">{getFilePreview()}</a>
         </div>
@@ -108,23 +108,28 @@ const NftCard = ({ nft, isAuction, isProfileCard }) => {
           </Link>
           {!isProfileCard && isAuction ? (
             <p className="mb-4 text-sm">
-              Currenct Price : <span className="gradient-text">{auctionDetails?.currentPrice} ETH</span>
+              Currenct Price : <span className="gradient-text">{auctionDetails?.currentPrice} BNB</span>
             </p>
           ) : (
             !isProfileCard && (
               <p className="mb-4 text-sm">
                 Price :{" "}
-                <span className="gradient-text">{nft?.price && `${web3.utils.fromWei(nft?.price, "ether")} ETH`}</span>
+                <span className="gradient-text">
+                  {nft?.price &&
+                    (nft.priceType === "1"
+                      ? `${web3.utils.fromWei(nft.price.toString(),"ether")} ${ercSymbol}`
+                      : `${web3.utils.fromWei(nft.price.toString(), "ether")} BNB`)}
+                </span>
               </p>
             )
           )}
-          <div className="d-flex align-items-center justify-content-between">
+          <div className="d-flex align-items-center justify-content-center">
             <Link to={`/nft/${nft.tokenId}`} className="btn btn-outline-primary btn-sm mb-0">
               {isProfileCard ? "View Details" : isAuction ? "Place Bid" : "Buy Now"}
             </Link>
           </div>
         </div>
-      </div>
+      </Link>
     </div>
   );
 };

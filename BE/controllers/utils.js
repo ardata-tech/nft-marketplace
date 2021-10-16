@@ -9,9 +9,10 @@ import marketplaceConfig from '../config/marketplace-config.js';
 
 const TOKEN_SECRET = 'JWT_SECRET';
 
-const INFURA_PROJECT_ID = "15df16fd2dfa4b7eaad1c1e416f7a925";
-const INFURA_PROJECT_SECRET = "a3fd4912671d4814b34e77ffc7ed2c85";
-const API_URL = `https://:${INFURA_PROJECT_SECRET}@rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`;
+// const INFURA_PROJECT_ID = "15df16fd2dfa4b7eaad1c1e416f7a925";
+// const INFURA_PROJECT_SECRET = "a3fd4912671d4814b34e77ffc7ed2c85";
+// const API_URL = `https://:${INFURA_PROJECT_SECRET}@rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`;
+const API_URL = 'https://data-seed-prebsc-1-s1.binance.org:8545/';
 const web3 = new Web3(API_URL);
 
 // web3.eth.accounts.wallet.add(walletPrivateKey);

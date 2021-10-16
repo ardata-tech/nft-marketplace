@@ -14,6 +14,9 @@ import ItemOptions from "./ItemOptions";
 import { Modal, Spinner } from "reactstrap";
 import { approveToken } from "../utils/erc721Interactor";
 import { getUrlExtension } from "../services/utilService";
+import { getSymbolERC20 } from "../utils/erc20Interactor";
+
+let ercSymbol = "TKN";
 const NftDetails = ({ match }) => {
   const { state } = useContext(UserContext);
   const [loader, showLoader, hideLoader] = useLoader();
@@ -24,6 +27,7 @@ const NftDetails = ({ match }) => {
   const [openModal, setOpenModal] = useState(false);
   const [isApproving, setIsApproving] = useState(true);
   const [optionType, setOptionType] = useState("");
+  const [currencyType, setCurrencyType] = useState("ETH"); //erc20
 
   useEffect(() => {
     init();
@@ -36,6 +40,7 @@ const NftDetails = ({ match }) => {
       toast.error("NFT not Found!");
       history.replace("/");
     }
+    ercSymbol = await getSymbolERC20();
   };
 
   const fetchNFT = async (id) => {
@@ -73,7 +78,7 @@ const NftDetails = ({ match }) => {
   const handleListForSaleClick = async (price) => {
     try {
       showLoader();
-      await listTokenMarketplace(tokenId, price, 0);
+      await listTokenMarketplace(tokenId, price, currencyType === "ERC20" ? 1 : 0);
       setOptionType("");
     } catch (e) {
       toast.error("Something went wrong!");
@@ -165,14 +170,14 @@ const NftDetails = ({ match }) => {
     const type = getUrlExtension(url).toLowerCase();
     if (["mp4", "ogv", "ogg", "webm"].includes(type)) {
       return (
-        <video class="w-100 border-radius-lg" controls style={{ maxHeight: "600px", objectFit: "contain" }}>
+        <video className="w-100 border-radius-lg" controls style={{ maxHeight: "600px", objectFit: "contain" }}>
           <source src={url} type={`video/${type}`} />
         </video>
       );
     }
     if (["mp3", "ogv"].includes(type)) {
       return (
-        <audio class="w-100 border-radius-lg" controls style={{ maxHeight: "600px", objectFit: "contain" }}>
+        <audio className="w-100 border-radius-lg" controls style={{ maxHeight: "600px", objectFit: "contain" }}>
           <source src={url} type={`audio/${type}`} />
         </audio>
       );
@@ -181,7 +186,7 @@ const NftDetails = ({ match }) => {
       <object
         alt="Uploaded file"
         data={url}
-        class="w-100 border-radius-lg"
+        className="w-100 border-radius-lg"
         style={{ height: "600px", objectFit: "cover" }}
         height="600"
       />
@@ -193,13 +198,13 @@ const NftDetails = ({ match }) => {
       {loader}
       {nftDetails && (
         <main className="main-content mt-1 border-radius-lg">
-          <div class="container-fluid">
+          <div className="container-fluid">
             <div
-              class="page-header breadcrumb-header min-height-300 border-radius-xl mt-4 mb-30"
+              className="page-header breadcrumb-header min-height-300 border-radius-xl mt-4 mb-30"
               style={{ "background-image": "url('/assets/img/curved-images/curved6.jpg')", "background-size": "cover" }}
             >
-              <span class="mask bg-gradient-primary opacity-6"></span>
-              <div class="con-wrapper">
+              <span className="mask bg-gradient-primary opacity-6"></span>
+              <div className="con-wrapper">
                 <h2>Item Details</h2>
                 <p>
                   Home / <span>Item Details</span>
@@ -207,23 +212,23 @@ const NftDetails = ({ match }) => {
               </div>
             </div>
           </div>
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-lg-5 me-auto mt-lg-0">
-                <div class="card">
-                  <div class="card-body p-3">{getFilePreview()}</div>
+          <div className="container-fluid">
+            <div className="row">
+              <div className="col-lg-5 me-auto mt-lg-0">
+                <div className="card">
+                  <div className="card-body p-3">{getFilePreview()}</div>
                 </div>
                 {state?.user?.address && nftDetails?.owner.toLowerCase() === state.user.address.toLowerCase() && (
                   <div className="mb-4">
                     {ListingType[nftDetails?.listingType] === ListingType.NOT_LISTED && (
                       <>
-                        <div class="text-center mt-4" onClick={() => !optionType && listItem()}>
-                          <button disabled={optionType} class="btn bg-gradient-primary w-80 mb-0">
+                        <div className="text-center mt-4" onClick={() => !optionType && listItem()}>
+                          <button disabled={optionType} className="btn bg-gradient-primary w-80 mb-0">
                             Sell Item
                           </button>
                         </div>
-                        <div class="text-center mt-4" onClick={() => !optionType && initiateCreateAuction()}>
-                          <button disabled={optionType} class="btn bg-gradient-primary w-80 mb-0">
+                        <div className="text-center mt-4" onClick={() => !optionType && initiateCreateAuction()}>
+                          <button disabled={optionType} className="btn bg-gradient-primary w-80 mb-0">
                             Create Auction
                           </button>
                         </div>
@@ -232,28 +237,29 @@ const NftDetails = ({ match }) => {
 
                     {ListingType[nftDetails?.listingType] === ListingType.AUCTION && (
                       <>
-                        <div class="text-center mt-4" onClick={() => cancelAuction()}>
-                          <span class="btn bg-gradient-primary w-70 mb-0">Cancel Auction</span>
+                        <div className="text-center mt-4" onClick={() => cancelAuction()}>
+                          <span className="btn bg-gradient-primary w-70 mb-0">Cancel Auction</span>
                         </div>
                       </>
                     )}
 
                     {ListingType[nftDetails?.listingType] === ListingType.MARKETPLACE && (
                       <>
-                        <div class="text-center mt-4" onClick={() => unListItem()}>
-                          <span class="btn bg-gradient-primary w-70 mb-0">UnList Item</span>
+                        <div className="text-center mt-4" onClick={() => unListItem()}>
+                          <span className="btn bg-gradient-primary w-70 mb-0">UnList Item</span>
                         </div>
                       </>
                     )}
                   </div>
                 )}
               </div>
-              <div class="col-lg-7">
-                <BasicItemDetails nftDetails={nftDetails} />
+              <div className="col-lg-7">
+                <BasicItemDetails nftDetails={nftDetails} ercSymbol={ercSymbol} />
                 {((!isApproving && optionType) ||
                   !state?.user?.address ||
                   nftDetails?.owner.toLowerCase() !== state.user.address.toLowerCase()) && (
                   <ItemOptions
+                    ercSymbol={ercSymbol}
                     nftDetails={nftDetails}
                     handleBuy={handleBuy}
                     handleBid={handleBid}
@@ -261,6 +267,8 @@ const NftDetails = ({ match }) => {
                     handleListForSaleClick={handleListForSaleClick}
                     handleCreateAuctionClick={handleCreateAuctionClick}
                     clearOptionType={() => setOptionType("")}
+                    setCurrencyType={setCurrencyType}
+                    currencyType={currencyType}
                   />
                 )}
               </div>

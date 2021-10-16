@@ -103,26 +103,26 @@ class App extends Component {
 
   handleSignIn = async () => {
     this.handleChangeState({ isLoading: true });
-    const { user, success } = await signIn(getCurrentWalletConnected());
+    const { user, success, error } = await signIn(getCurrentWalletConnected());
     this.handleChangeState({ user });
     if (user && success) {
       //   toast.success("Signed in redirecting...");
       window.location.href = "/";
     } else {
       this.handleChangeState({ isLoading: false });
-      toast.error("Somthing went worng");
+      toast.error(typeof error === "string" ? error : "Somthing went worng");
     }
   };
   handleSignUp = async (val) => {
     this.handleChangeState({ isLoading: true });
-    const { user, success } = await signUp(getCurrentWalletConnected(), val);
+    const { user, success, error } = await signUp(getCurrentWalletConnected(), val);
     this.handleChangeState({ user });
     if (user && success) {
       //   toast.success("Signed in redirecting...");
       window.location.href = "/";
     } else {
       this.handleChangeState({ isLoading: false });
-      toast.error("Somthing went worng");
+      toast.error(typeof error === "string" ? error : "Somthing went worng");
     }
   };
 

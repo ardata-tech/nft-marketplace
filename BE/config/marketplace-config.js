@@ -1,6 +1,6 @@
 export default
 {
-    "address": "0x5425fdcC504498a9a3998AfFe9C06Fb59BC82ca4",
+    "address": "0xf23Bc04F9504918Cb09fAf497d97fa3412c84F9C",
 	"abi": [
 		{
 			"anonymous": false,

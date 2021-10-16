@@ -10,6 +10,7 @@ import { mintNFT, getMintFees } from "../utils/marketPlaceInteractor";
 import { getTokenIdFromTxn } from "../utils/blockchainInteractor";
 import useLoader from "../hooks/useLoader";
 import * as Yup from "yup";
+import { approveSpenderERC20, getSymbolERC20 } from "../utils/erc20Interactor";
 const re =
   /^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$/i;
 const NFT_VALIDATION_SCHEMA = Yup.object().shape({
@@ -19,6 +20,7 @@ const NFT_VALIDATION_SCHEMA = Yup.object().shape({
   image: Yup.string().required("File is  Required"),
   external_url: Yup.string().matches(re, "External Link is not valid"),
 });
+let ercSymbol = "TKN";
 function MintPage(props) {
   const history = useHistory();
   const userContext = useContext(UserContext);
@@ -28,11 +30,22 @@ function MintPage(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [mintFees, setMintFees] = useState("0");
   const [fileData, setFileData] = useState(null);
+  const [currencyType, setCurrencyType] = useState("ETH"); //erc20
 
   const init = async () => {
     if (!user) await handleStart();
-    setMintFees(await getMintFees());
+    _getMintFee();
+    ercSymbol = await getSymbolERC20();
   };
+
+  const _getMintFee = async (isErc) => {
+    setMintFees(await getMintFees(isErc));
+  };
+
+  useEffect(() => {
+    if (currencyType === "ERC") _getMintFee(true);
+    else _getMintFee();
+  }, [currencyType]);
 
   useEffect(() => {
     init();
@@ -72,8 +85,11 @@ function MintPage(props) {
   const submit = async (values) => {
     showLoader();
     try {
-      const tx = await mintNFT();
-      const tokenID = getTokenIdFromTxn(tx);
+      if (currencyType === "ERC") {
+        await approveSpenderERC20();
+      }
+      const tx = await mintNFT(currencyType);
+      const tokenID = getTokenIdFromTxn(tx, currencyType === "ERC");
       await saveMeta({ ...values, tokenID });
       history.push(`/nft/${tokenID}`);
       toast.success(`NFT minted with ${tokenID}`);
@@ -115,26 +131,9 @@ function MintPage(props) {
         {/* Navbar */}
         <nav className="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur">
           <div className="container-fluid py-1 px-3">
-            <nav aria-label="breadcrumb">
-              <h6 className="font-weight-bolder mb-0">Create NFT</h6>
-            </nav>
+            <nav aria-label="breadcrumb"></nav>
           </div>
         </nav>
-        {/* End Navbar */}
-        <div className="container-fluid">
-          <div
-            className="page-header breadcrumb-header min-height-300 border-radius-xl mt-4 mb-30"
-            style={{ backgroundImage: 'url("/assets/img/curved-images/curved6.jpg")', backgroundSize: "cover" }}
-          >
-            <span className="mask bg-gradient-primary opacity-6" />
-            <div className="con-wrapper">
-              <h2>Create NFT</h2>
-              <p>
-                Home / <span>Create NFT</span>
-              </p>
-            </div>
-          </div>
-        </div>
         <Formik initialValues={newNFT} validationSchema={NFT_VALIDATION_SCHEMA} onSubmit={onSubmit}>
           {({ isSubmitting, values, setFieldValue, errors, touched, handleChange }) => {
             return (
@@ -147,7 +146,9 @@ function MintPage(props) {
                       </div>
                       <div className="d-flex flex-column h-100">
                         <h5 className="font-weight-bolder">Create New NFT</h5>
-                        <p className="mb-1 text-bold">Mint Fee of {mintFees} eth will be charged.</p>
+                        <p className="mb-1 text-bold">
+                          Mint Fee of {mintFees} {currencyType === "ERC" ? ercSymbol : "BNB"} will be charged.
+                        </p>
                       </div>
                     </div>
                     <div className="col-12 mb-30">
@@ -271,7 +272,9 @@ function MintPage(props) {
                       </div>
                       <div className="d-flex flex-column h-100">
                         <h5 className="font-weight-bolder">Create New NFT</h5>
-                        <p className="mb-1 text-bold">Mint Fee of {mintFees} eth will be charged.</p>
+                        <p className="mb-1 text-bold">
+                          Mint Fee of {mintFees} {currencyType === "ERC" ? ercSymbol : "BNB"} will be charged.
+                        </p>
                       </div>
                     </div>
                     <div className="col-12">
@@ -280,7 +283,7 @@ function MintPage(props) {
                           <h6 className="mb-0">Category Settings</h6>
                         </div>
                         <div className="card-body p-3">
-                          <h6 className="text-uppercase text-body text-xs font-weight-bolder mt-4">Item Category</h6>
+                          <h6 className="text-uppercase text-body text-xs font-weight-bolder mt-3">Item Category</h6>
                           <ul className="list-group">
                             <li className="list-group-item border-0 px-0">
                               <div className="form-check form-check-info text-left">
@@ -291,6 +294,7 @@ function MintPage(props) {
                                   value="ART"
                                   id="cat_art"
                                   onChange={handleChange}
+                                  checked={values.category === "ART"}
                                 />
                                 <label className="form-check-label" htmlFor="cat_art">
                                   Art
@@ -306,6 +310,7 @@ function MintPage(props) {
                                   value="PHOTO"
                                   id="cat_photo"
                                   onChange={handleChange}
+                                  checked={values.category === "PHOTO"}
                                 />
                                 <label className="form-check-label" htmlFor="cat_photo">
                                   Photo
@@ -321,15 +326,106 @@ function MintPage(props) {
                                   value="GIF"
                                   id="cat_gif"
                                   onChange={handleChange}
+                                  checked={values.category === "GIF"}
                                 />
                                 <label className="form-check-label" htmlFor="cat_gif">
                                   Gif
                                 </label>
                               </div>
                             </li>
+                            <li className="list-group-item border-0 px-0 pb-0">
+                              <div className="form-check form-check-info text-left">
+                                <input
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="category"
+                                  value="VIDEO"
+                                  id="cat_vid"
+                                  onChange={handleChange}
+                                  checked={values.category === "VIDEO"}
+                                />
+                                <label className="form-check-label" htmlFor="cat_vid">
+                                  Video
+                                </label>
+                              </div>
+                            </li>
+                            <li className="list-group-item border-0 px-0 pb-0">
+                              <div className="form-check form-check-info text-left">
+                                <input
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="category"
+                                  value="AUDIO"
+                                  id="cat_aud"
+                                  onChange={handleChange}
+                                  checked={values.category === "AUDIO"}
+                                />
+                                <label className="form-check-label" htmlFor="cat_aud">
+                                  Audio
+                                </label>
+                              </div>
+                            </li>
+                            <li className="list-group-item border-0 px-0 pb-0">
+                              <div className="form-check form-check-info text-left">
+                                <input
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="category"
+                                  value="PDF"
+                                  id="cat_pdf"
+                                  onChange={handleChange}
+                                  checked={values.category === "PDF"}
+                                />
+                                <label className="form-check-label" htmlFor="cat_pdf">
+                                  PDF
+                                </label>
+                              </div>
+                            </li>
                             {errors.category && touched.category ? (
                               <div className="text-danger mt-2">Category is Required</div>
                             ) : null}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-12">
+                      <div className="card h-100 mb-30">
+                        <div className="card-header pb-0 p-3">
+                          <h6 className="mb-0">Select Currency</h6>
+                        </div>
+                        <div className="card-body p-3">
+                          <ul className="list-group">
+                            <li className="list-group-item border-0 px-0">
+                              <div className="form-check form-check-info text-left">
+                                <input
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="currency"
+                                  value="ETH"
+                                  id="curr_eth"
+                                  onChange={() => setCurrencyType("ETH")}
+                                  defaultChecked
+                                />
+                                <label className="form-check-label" htmlFor="curr_eth">
+                                  BNB
+                                </label>
+                              </div>
+                            </li>
+                            <li className="list-group-item border-0 px-0">
+                              <div className="form-check form-check-info text-left">
+                                <input
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="currency"
+                                  value="ERC"
+                                  id="curr_erc"
+                                  onChange={() => setCurrencyType("ERC")}
+                                />
+                                <label className="form-check-label" htmlFor="curr_erc">
+                                  {ercSymbol}
+                                </label>
+                              </div>
+                            </li>
                           </ul>
                         </div>
                       </div>

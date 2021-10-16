@@ -18,11 +18,11 @@ function AuctionForm({ tokenId, reset, makeAuction, clearOptionType }) {
         <>
           <div>
             <div className="theme-input-box mt-2">
-              <label>Start price (ETH)</label>
-              <div class="mb-3">
+              <label>Start price (BNB)</label>
+              <div className="mb-3">
                 <input
                   type="number"
-                  class="form-control"
+                  className="form-control"
                   value={auctionForm.startPrice}
                   onChange={handleChange}
                   name="startPrice"
@@ -30,12 +30,12 @@ function AuctionForm({ tokenId, reset, makeAuction, clearOptionType }) {
               </div>
             </div>
             <div className="theme-input-box mt-2">
-              <label>End Price (ETH)</label>
-              <div class="mb-3">
+              <label>End Price (BNB)</label>
+              <div className="mb-3">
                 <input
                   value={auctionForm.endPrice}
                   onChange={handleChange}
-                  class="form-control"
+                  className="form-control"
                   type="number"
                   name="endPrice"
                 />
@@ -43,11 +43,11 @@ function AuctionForm({ tokenId, reset, makeAuction, clearOptionType }) {
             </div>
             <div className="theme-input-box mt-2">
               <label>Duration (hours)</label>
-              <div class="mb-3">
+              <div className="mb-3">
                 <input
                   value={auctionForm.duration}
                   onChange={handleChange}
-                  class="form-control"
+                  className="form-control"
                   type="number"
                   name="duration"
                 />
@@ -63,8 +63,8 @@ function AuctionForm({ tokenId, reset, makeAuction, clearOptionType }) {
             >
               Create Auction
             </button>
-            <div class="text-center w-45" onClick={clearOptionType}>
-              <button class="btn bg-gradient-dark w-100 mb-0">Cancel</button>
+            <div className="text-center w-45" onClick={clearOptionType}>
+              <button className="btn bg-gradient-dark w-100 mb-0">Cancel</button>
             </div>
           </div>
         </>

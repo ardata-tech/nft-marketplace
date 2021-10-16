@@ -83,14 +83,13 @@ export async function getTokenInfo(tokenId){
     }
     return tokenInfo;
 }
-export async function  getAllNFTs(address){
-    let nfts = !address ? await getStoreFrontNFTS() : await getUserNFTs(address);
-    const tokenIDs = [];
-    for(const token of nfts)
-        tokenIDs.push(token.tokenId);
-    let metaDatas = await getMetaForMany({tokenIDs});
-    for(let i=0;i<nfts.length;i++)
-        nfts[i] = {...nfts[i],...metaDatas.data[i]};
+export async function getAllNFTs(address, setShowBanner) {
+  let nfts = !address ? await getStoreFrontNFTS() : await getUserNFTs(address);
+  setShowBanner && setShowBanner(true);
+  const tokenIDs = [];
+  for (const token of nfts) tokenIDs.push(token.tokenId);
+  let metaDatas = await getMetaForMany({ tokenIDs });
+  for (let i = 0; i < nfts.length; i++) nfts[i] = { ...nfts[i], ...metaDatas.data[i] };
 
-    return nfts;
+  return nfts;
 }
