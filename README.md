@@ -1,7 +1,6 @@
-# Vanilla NFT Marketplace
+# ProofNFT Marketplace
 
 ## Installation
-
 
 ### Configure the application
 - Mongo db configuration: Register here: https://www.mongodb.com/cloud/atlas/register
