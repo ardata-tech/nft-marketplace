@@ -18,7 +18,7 @@
     "eth-sig-util": "^3.0.1",
     "ethereumjs-util": "^7.0.10",
     "express": "^4.17.1",
-    "file-type": "^16.5.0",
+    "file-type": "^16.5.4",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.29",
     "multiparty": "^4.2.2",
