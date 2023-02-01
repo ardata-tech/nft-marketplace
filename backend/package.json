@@ -20,7 +20,7 @@
     "express": "^4.17.1",
     "file-type": "^16.5.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.9.29",
+    "mongoose": "^5.13.15",
     "multiparty": "^4.2.2",
     "web3": "^1.3.6"
   },
